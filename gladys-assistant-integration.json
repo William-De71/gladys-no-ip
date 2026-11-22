@@ -1,0 +1,887 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "No-IP",
+  "description": {
+    "en": "Dynamic DNS with No-IP: your hostnames follow your home’s public IP address.",
+    "fr": "DNS dynamique No-IP : vos noms d’hôte suivent l’adresse IP publique de la maison.",
+    "de": "Dynamisches DNS mit No-IP: deine Hostnamen folgen der öffentlichen IP deines Zuhauses.",
+    "es": "DNS dinámico con No-IP: tus nombres de host siguen la IP pública de tu casa."
+  },
+  "version": "0.1.0",
+  "docker_image": "ghcr.io/william-de71/gladys-no-ip:0.1.0",
+  "gladys_version": ">=5.3.0",
+  "categories": ["network", "servers"],
+  "keywords": [
+    "noip",
+    "no ip",
+    "ddns",
+    "dyndns",
+    "dynamic dns",
+    "dns dynamique",
+    "ddns.net",
+    "public ip",
+    "ip publique",
+    "ddns key"
+  ],
+  "cover_image": "https://raw.githubusercontent.com/William-De71/gladys-no-ip/main/cover.jpg",
+  "transports": ["cloud"],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "No-IP",
+        "fr": "No-IP",
+        "de": "No-IP",
+        "es": "No-IP"
+      },
+      "description": {
+        "en": "No-IP keeps a hostname (home.ddns.net) pointed at the public address of your home, even when your internet provider changes it. Enter your No-IP account, or better a DDNS Key (No-IP website → Dynamic DNS → DDNS Keys) that only updates its hostnames, then the names to keep up to date, and press \"Test the connection\". The password stays in Gladys and only goes to No-IP. Free hostnames must still be confirmed on the No-IP website every 30 days. Not affiliated with No-IP.",
+        "fr": "No-IP garde un nom d’hôte (maison.ddns.net) pointé vers l’adresse publique de votre maison, même quand votre fournisseur d’accès la change. Saisissez votre compte No-IP, ou mieux une DDNS Key (site No-IP → Dynamic DNS → DDNS Keys) qui ne sert qu’à mettre à jour ses noms, puis les noms à tenir à jour, et appuyez sur « Tester la connexion ». Le mot de passe reste dans Gladys et ne part que vers No-IP. Les noms gratuits doivent toujours être confirmés sur le site No-IP tous les 30 jours. Sans lien avec No-IP.",
+        "de": "No-IP hält einen Hostnamen (zuhause.ddns.net) auf die öffentliche Adresse deines Zuhauses gerichtet, auch wenn dein Internetanbieter sie ändert. Gib dein No-IP-Konto ein, oder besser einen DDNS Key (No-IP-Website → Dynamic DNS → DDNS Keys), der nur seine Hostnamen aktualisiert, dann die aktuell zu haltenden Namen, und drücke „Verbindung testen“. Das Passwort bleibt in Gladys und geht nur an No-IP. Kostenlose Hostnamen müssen weiterhin alle 30 Tage auf der No-IP-Website bestätigt werden. Nicht mit No-IP verbunden.",
+        "es": "No-IP mantiene un nombre de host (casa.ddns.net) apuntando a la dirección pública de tu casa, aunque tu proveedor de internet la cambie. Introduce tu cuenta No-IP, o mejor una DDNS Key (web de No-IP → Dynamic DNS → DDNS Keys) que solo actualiza sus nombres, luego los nombres que mantener al día, y pulsa «Probar la conexión». La contraseña se queda en Gladys y solo va a No-IP. Los nombres gratuitos se siguen confirmando en la web de No-IP cada 30 días. Sin relación con No-IP."
+      },
+      "links": [
+        {
+          "url": "https://www.noip.com/support/knowledgebase/how-to-setup-and-use-a-ddns-key",
+          "label": {
+            "en": "How to create a DDNS Key",
+            "fr": "Créer une DDNS Key",
+            "de": "Einen DDNS Key erstellen",
+            "es": "Crear una DDNS Key"
+          }
+        },
+        {
+          "url": "https://my.noip.com/dynamic-dns",
+          "label": {
+            "en": "Your No-IP hostnames",
+            "fr": "Vos noms d’hôte No-IP",
+            "de": "Deine No-IP-Hostnamen",
+            "es": "Tus nombres de host No-IP"
+          }
+        }
+      ]
+    },
+    {
+      "key": "username",
+      "type": "string",
+      "label": {
+        "en": "Username",
+        "fr": "Identifiant",
+        "de": "Benutzername",
+        "es": "Usuario"
+      },
+      "description": {
+        "en": "The username of a DDNS Key, or the e-mail address (or username) of your No-IP account.",
+        "fr": "L’identifiant d’une DDNS Key, ou l’adresse e-mail (ou l’identifiant) de votre compte No-IP.",
+        "de": "Der Benutzername eines DDNS Keys oder die E-Mail-Adresse (oder der Benutzername) deines No-IP-Kontos.",
+        "es": "El usuario de una DDNS Key, o el correo electrónico (o el usuario) de tu cuenta No-IP."
+      },
+      "placeholder": {
+        "en": "me@example.com",
+        "fr": "moi@exemple.fr",
+        "de": "ich@beispiel.de",
+        "es": "yo@ejemplo.es"
+      },
+      "required": true
+    },
+    {
+      "key": "password",
+      "type": "secret",
+      "label": {
+        "en": "Password",
+        "fr": "Mot de passe",
+        "de": "Passwort",
+        "es": "Contraseña"
+      },
+      "description": {
+        "en": "The password of the DDNS Key (shown once when it is created), or of your No-IP account.",
+        "fr": "Le mot de passe de la DDNS Key (affiché une seule fois à sa création), ou celui de votre compte No-IP.",
+        "de": "Das Passwort des DDNS Keys (nur einmal bei der Erstellung angezeigt) oder deines No-IP-Kontos.",
+        "es": "La contraseña de la DDNS Key (se muestra una sola vez al crearla), o la de tu cuenta No-IP."
+      },
+      "required": true
+    },
+    {
+      "key": "hostnames",
+      "type": "string",
+      "label": {
+        "en": "Hostnames",
+        "fr": "Noms d’hôte",
+        "de": "Hostnamen",
+        "es": "Nombres de host"
+      },
+      "description": {
+        "en": "Separated by commas, ten at most: hostnames (home.ddns.net), group names, or all.ddnskey.com for every hostname of a DDNS Key.",
+        "fr": "Séparés par des virgules, dix au plus : noms d’hôte (maison.ddns.net), noms de groupe, ou all.ddnskey.com pour tous les noms d’une DDNS Key.",
+        "de": "Durch Kommas getrennt, höchstens zehn: Hostnamen (zuhause.ddns.net), Gruppennamen oder all.ddnskey.com für alle Hostnamen eines DDNS Keys.",
+        "es": "Separados por comas, diez como máximo: nombres de host (casa.ddns.net), nombres de grupo, o all.ddnskey.com para todos los nombres de una DDNS Key."
+      },
+      "placeholder": {
+        "en": "home.ddns.net, nas.ddns.net",
+        "fr": "maison.ddns.net, nas.ddns.net",
+        "de": "zuhause.ddns.net, nas.ddns.net",
+        "es": "casa.ddns.net, nas.ddns.net"
+      },
+      "required": true
+    },
+    {
+      "key": "records",
+      "type": "select",
+      "label": {
+        "en": "Records to update",
+        "fr": "Enregistrements à mettre à jour",
+        "de": "Zu aktualisierende Einträge",
+        "es": "Registros que actualizar"
+      },
+      "description": {
+        "en": "IPv6 needs a hostname with an AAAA record (or IPv4 and IPv6) at No-IP, and an IPv6 connection reaching the container.",
+        "fr": "L’IPv6 demande un nom d’hôte avec un enregistrement AAAA (ou IPv4 et IPv6) chez No-IP, et une connexion IPv6 jusqu’au conteneur.",
+        "de": "IPv6 braucht bei No-IP einen Hostnamen mit AAAA-Eintrag (oder IPv4 und IPv6) und eine IPv6-Verbindung bis zum Container.",
+        "es": "El IPv6 necesita en No-IP un nombre de host con registro AAAA (o IPv4 e IPv6) y una conexión IPv6 hasta el contenedor."
+      },
+      "options": [
+        {
+          "value": "ipv4",
+          "label": {
+            "en": "IPv4 (A)",
+            "fr": "IPv4 (A)",
+            "de": "IPv4 (A)",
+            "es": "IPv4 (A)"
+          }
+        },
+        {
+          "value": "ipv6",
+          "label": {
+            "en": "IPv6 (AAAA)",
+            "fr": "IPv6 (AAAA)",
+            "de": "IPv6 (AAAA)",
+            "es": "IPv6 (AAAA)"
+          }
+        },
+        {
+          "value": "both",
+          "label": {
+            "en": "IPv4 and IPv6 (A and AAAA)",
+            "fr": "IPv4 et IPv6 (A et AAAA)",
+            "de": "IPv4 und IPv6 (A und AAAA)",
+            "es": "IPv4 e IPv6 (A y AAAA)"
+          }
+        }
+      ],
+      "default": "ipv4",
+      "required": false
+    },
+    {
+      "key": "options_section",
+      "type": "section",
+      "label": {
+        "en": "Options",
+        "fr": "Options",
+        "de": "Optionen",
+        "es": "Opciones"
+      }
+    },
+    {
+      "key": "interval",
+      "type": "select",
+      "label": {
+        "en": "Check of the public address",
+        "fr": "Vérification de l’adresse publique",
+        "de": "Prüfung der öffentlichen Adresse",
+        "es": "Comprobación de la dirección pública"
+      },
+      "description": {
+        "en": "How often the public address is read. No-IP is only called when a name must change.",
+        "fr": "La fréquence de lecture de l’adresse publique. No-IP n’est appelé que si un nom doit changer.",
+        "de": "Wie oft die öffentliche Adresse gelesen wird. No-IP wird nur aufgerufen, wenn sich ein Name ändern muss.",
+        "es": "Cada cuánto se lee la dirección pública. Solo se llama a No-IP cuando un nombre debe cambiar."
+      },
+      "options": [
+        {
+          "value": "60",
+          "label": {
+            "en": "Every minute",
+            "fr": "Toutes les minutes",
+            "de": "Jede Minute",
+            "es": "Cada minuto"
+          }
+        },
+        {
+          "value": "300",
+          "label": {
+            "en": "Every 5 minutes",
+            "fr": "Toutes les 5 minutes",
+            "de": "Alle 5 Minuten",
+            "es": "Cada 5 minutos"
+          }
+        },
+        {
+          "value": "900",
+          "label": {
+            "en": "Every 15 minutes",
+            "fr": "Toutes les 15 minutes",
+            "de": "Alle 15 Minuten",
+            "es": "Cada 15 minutos"
+          }
+        },
+        {
+          "value": "1800",
+          "label": {
+            "en": "Every 30 minutes",
+            "fr": "Toutes les 30 minutes",
+            "de": "Alle 30 Minuten",
+            "es": "Cada 30 minutos"
+          }
+        }
+      ],
+      "default": "300",
+      "required": false
+    },
+    {
+      "key": "language",
+      "type": "select",
+      "label": {
+        "en": "Language of the texts",
+        "fr": "Langue des textes",
+        "de": "Sprache der Texte",
+        "es": "Idioma de los textos"
+      },
+      "description": {
+        "en": "Language of the device names, of the status and of the scene summaries. Automatic follows the language of your dashboard.",
+        "fr": "Langue des noms d’appareils, de l’état et des résumés de scène. Automatique suit la langue de votre tableau de bord.",
+        "de": "Sprache der Gerätenamen, des Status und der Szenen-Zusammenfassungen. Automatisch folgt der Sprache deines Dashboards.",
+        "es": "Idioma de los nombres de dispositivos, del estado y de los resúmenes de escena. Automático sigue el idioma de tu panel."
+      },
+      "options": [
+        {
+          "value": "auto",
+          "label": {
+            "en": "Automatic",
+            "fr": "Automatique",
+            "de": "Automatisch",
+            "es": "Automático"
+          }
+        },
+        {
+          "value": "en",
+          "label": {
+            "en": "English",
+            "fr": "Anglais",
+            "de": "Englisch",
+            "es": "Inglés"
+          }
+        },
+        {
+          "value": "fr",
+          "label": {
+            "en": "French",
+            "fr": "Français",
+            "de": "Französisch",
+            "es": "Francés"
+          }
+        },
+        {
+          "value": "de",
+          "label": {
+            "en": "German",
+            "fr": "Allemand",
+            "de": "Deutsch",
+            "es": "Alemán"
+          }
+        },
+        {
+          "value": "es",
+          "label": {
+            "en": "Spanish",
+            "fr": "Espagnol",
+            "de": "Spanisch",
+            "es": "Español"
+          }
+        }
+      ],
+      "default": "auto",
+      "required": false
+    }
+  ],
+  "actions": [
+    {
+      "key": "test_connection",
+      "label": {
+        "en": "Test the connection",
+        "fr": "Tester la connexion",
+        "de": "Verbindung testen",
+        "es": "Probar la conexión"
+      },
+      "description": {
+        "en": "Reads the public address and sends every name to No-IP now, even a stopped one: an answer \"already right\" proves the login works.",
+        "fr": "Lit l’adresse publique et envoie tout de suite chaque nom à No-IP, même arrêté : une réponse « déjà à jour » prouve que l’identifiant fonctionne.",
+        "de": "Liest die öffentliche Adresse und sendet sofort jeden Namen an No-IP, auch gestoppte: Die Antwort „schon aktuell“ beweist, dass die Anmeldung funktioniert.",
+        "es": "Lee la dirección pública y envía ahora cada nombre a No-IP, incluso uno detenido: una respuesta «ya al día» demuestra que el acceso funciona."
+      },
+      "timeout_seconds": 60
+    },
+    {
+      "key": "diagnostic",
+      "label": {
+        "en": "Diagnostic",
+        "fr": "Diagnostic",
+        "de": "Diagnose",
+        "es": "Diagnóstico"
+      },
+      "description": {
+        "en": "Writes what the integration knows in its logs (password hidden), to attach to an issue.",
+        "fr": "Écrit ce que sait l’intégration dans ses journaux (mot de passe masqué), à joindre à un ticket.",
+        "de": "Schreibt, was die Integration weiß, in ihre Protokolle (Passwort verborgen), für ein Ticket.",
+        "es": "Escribe lo que sabe la integración en sus registros (contraseña oculta), para adjuntarlo a una incidencia."
+      },
+      "timeout_seconds": 15
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "public_ip_changed",
+      "label": {
+        "en": "No-IP: public address changed",
+        "fr": "No-IP : adresse publique changée",
+        "de": "No-IP: öffentliche Adresse geändert",
+        "es": "No-IP: dirección pública cambiada"
+      },
+      "description": {
+        "en": "The public address of the home changed (seen at the next check).",
+        "fr": "L’adresse publique de la maison a changé (vu à la vérification suivante).",
+        "de": "Die öffentliche Adresse des Zuhauses hat sich geändert (bei der nächsten Prüfung erkannt).",
+        "es": "La dirección pública de la casa cambió (visto en la siguiente comprobación)."
+      },
+      "fields": [
+        {
+          "key": "family",
+          "type": "select",
+          "label": {
+            "en": "Address type",
+            "fr": "Type d’adresse",
+            "de": "Adresstyp",
+            "es": "Tipo de dirección"
+          },
+          "description": {
+            "en": "Leave empty for IPv4 and IPv6.",
+            "fr": "Laissez vide pour IPv4 et IPv6.",
+            "de": "Leer lassen für IPv4 und IPv6.",
+            "es": "Déjalo vacío para IPv4 e IPv6."
+          },
+          "options": [
+            {
+              "value": "ipv4",
+              "label": {
+                "en": "IPv4",
+                "fr": "IPv4",
+                "de": "IPv4",
+                "es": "IPv4"
+              }
+            },
+            {
+              "value": "ipv6",
+              "label": {
+                "en": "IPv6",
+                "fr": "IPv6",
+                "de": "IPv6",
+                "es": "IPv6"
+              }
+            }
+          ],
+          "required": false
+        }
+      ],
+      "variables": [
+        {
+          "key": "family",
+          "type": "string",
+          "label": {
+            "en": "Address type (ipv4, ipv6)",
+            "fr": "Type d’adresse (ipv4, ipv6)",
+            "de": "Adresstyp (ipv4, ipv6)",
+            "es": "Tipo de dirección (ipv4, ipv6)"
+          }
+        },
+        {
+          "key": "previous_ip",
+          "type": "string",
+          "label": {
+            "en": "Former address",
+            "fr": "Ancienne adresse",
+            "de": "Vorherige Adresse",
+            "es": "Dirección anterior"
+          }
+        },
+        {
+          "key": "ip",
+          "type": "string",
+          "label": {
+            "en": "New address",
+            "fr": "Nouvelle adresse",
+            "de": "Neue Adresse",
+            "es": "Nueva dirección"
+          }
+        }
+      ]
+    },
+    {
+      "key": "record_updated",
+      "label": {
+        "en": "No-IP: record updated",
+        "fr": "No-IP : enregistrement mis à jour",
+        "de": "No-IP: Eintrag aktualisiert",
+        "es": "No-IP: registro actualizado"
+      },
+      "description": {
+        "en": "No-IP pointed a name at a new address.",
+        "fr": "No-IP a pointé un nom vers une nouvelle adresse.",
+        "de": "No-IP hat einen Namen auf eine neue Adresse gerichtet.",
+        "es": "No-IP apuntó un nombre a una nueva dirección."
+      },
+      "fields": [
+        {
+          "key": "host",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "No-IP name",
+            "fr": "Nom No-IP",
+            "de": "No-IP-Name",
+            "es": "Nombre No-IP"
+          },
+          "description": {
+            "en": "A No-IP device of the integration. Leave empty for any name.",
+            "fr": "Un appareil No-IP de l’intégration. Laissez vide pour n’importe quel nom.",
+            "de": "Ein No-IP-Gerät der Integration. Leer lassen für jeden Namen.",
+            "es": "Un dispositivo No-IP de la integración. Déjalo vacío para cualquier nombre."
+          },
+          "required": false
+        },
+        {
+          "key": "family",
+          "type": "select",
+          "label": {
+            "en": "Address type",
+            "fr": "Type d’adresse",
+            "de": "Adresstyp",
+            "es": "Tipo de dirección"
+          },
+          "description": {
+            "en": "Leave empty for IPv4 and IPv6.",
+            "fr": "Laissez vide pour IPv4 et IPv6.",
+            "de": "Leer lassen für IPv4 und IPv6.",
+            "es": "Déjalo vacío para IPv4 e IPv6."
+          },
+          "options": [
+            {
+              "value": "ipv4",
+              "label": {
+                "en": "IPv4",
+                "fr": "IPv4",
+                "de": "IPv4",
+                "es": "IPv4"
+              }
+            },
+            {
+              "value": "ipv6",
+              "label": {
+                "en": "IPv6",
+                "fr": "IPv6",
+                "de": "IPv6",
+                "es": "IPv6"
+              }
+            }
+          ],
+          "required": false
+        }
+      ],
+      "variables": [
+        {
+          "key": "hostname",
+          "type": "string",
+          "label": {
+            "en": "No-IP name",
+            "fr": "Nom No-IP",
+            "de": "No-IP-Name",
+            "es": "Nombre No-IP"
+          }
+        },
+        {
+          "key": "family",
+          "type": "string",
+          "label": {
+            "en": "Address type (ipv4, ipv6)",
+            "fr": "Type d’adresse (ipv4, ipv6)",
+            "de": "Adresstyp (ipv4, ipv6)",
+            "es": "Tipo de dirección (ipv4, ipv6)"
+          }
+        },
+        {
+          "key": "ip",
+          "type": "string",
+          "label": {
+            "en": "New address",
+            "fr": "Nouvelle adresse",
+            "de": "Neue Adresse",
+            "es": "Nueva dirección"
+          }
+        },
+        {
+          "key": "previous_ip",
+          "type": "string",
+          "label": {
+            "en": "Former address",
+            "fr": "Ancienne adresse",
+            "de": "Vorherige Adresse",
+            "es": "Dirección anterior"
+          }
+        }
+      ]
+    },
+    {
+      "key": "update_failed",
+      "label": {
+        "en": "No-IP: update failed",
+        "fr": "No-IP : échec de mise à jour",
+        "de": "No-IP: Aktualisierung fehlgeschlagen",
+        "es": "No-IP: fallo de actualización"
+      },
+      "description": {
+        "en": "A record could not be updated: once per error, not at every check.",
+        "fr": "Un enregistrement n’a pas pu être mis à jour : une fois par erreur, pas à chaque vérification.",
+        "de": "Ein Eintrag konnte nicht aktualisiert werden: einmal pro Fehler, nicht bei jeder Prüfung.",
+        "es": "Un registro no se pudo actualizar: una vez por error, no en cada comprobación."
+      },
+      "fields": [
+        {
+          "key": "host",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "No-IP name",
+            "fr": "Nom No-IP",
+            "de": "No-IP-Name",
+            "es": "Nombre No-IP"
+          },
+          "description": {
+            "en": "A No-IP device of the integration. Leave empty for any name.",
+            "fr": "Un appareil No-IP de l’intégration. Laissez vide pour n’importe quel nom.",
+            "de": "Ein No-IP-Gerät der Integration. Leer lassen für jeden Namen.",
+            "es": "Un dispositivo No-IP de la integración. Déjalo vacío para cualquier nombre."
+          },
+          "required": false
+        },
+        {
+          "key": "error",
+          "type": "select",
+          "label": {
+            "en": "Error",
+            "fr": "Erreur",
+            "de": "Fehler",
+            "es": "Error"
+          },
+          "description": {
+            "en": "Leave empty for any error.",
+            "fr": "Laissez vide pour toutes les erreurs.",
+            "de": "Leer lassen für jeden Fehler.",
+            "es": "Déjalo vacío para cualquier error."
+          },
+          "options": [
+            {
+              "value": "auth",
+              "label": {
+                "en": "Username or password refused",
+                "fr": "Identifiant ou mot de passe refusé",
+                "de": "Benutzername oder Passwort abgelehnt",
+                "es": "Usuario o contraseña rechazados"
+              }
+            },
+            {
+              "value": "nohost",
+              "label": {
+                "en": "Name unknown to the account",
+                "fr": "Nom inconnu du compte",
+                "de": "Name im Konto unbekannt",
+                "es": "Nombre desconocido en la cuenta"
+              }
+            },
+            {
+              "value": "badagent",
+              "label": {
+                "en": "Client disabled by No-IP",
+                "fr": "Client désactivé par No-IP",
+                "de": "Client von No-IP deaktiviert",
+                "es": "Cliente desactivado por No-IP"
+              }
+            },
+            {
+              "value": "donator",
+              "label": {
+                "en": "Feature not in the plan",
+                "fr": "Fonction absente de l’offre",
+                "de": "Funktion nicht im Tarif",
+                "es": "Función no incluida en el plan"
+              }
+            },
+            {
+              "value": "abuse",
+              "label": {
+                "en": "Account blocked",
+                "fr": "Compte bloqué",
+                "de": "Konto gesperrt",
+                "es": "Cuenta bloqueada"
+              }
+            },
+            {
+              "value": "server",
+              "label": {
+                "en": "No-IP error",
+                "fr": "Erreur No-IP",
+                "de": "No-IP-Fehler",
+                "es": "Error de No-IP"
+              }
+            },
+            {
+              "value": "network",
+              "label": {
+                "en": "No-IP unreachable",
+                "fr": "No-IP injoignable",
+                "de": "No-IP nicht erreichbar",
+                "es": "No-IP inaccesible"
+              }
+            },
+            {
+              "value": "no_ip",
+              "label": {
+                "en": "Public address unknown",
+                "fr": "Adresse publique inconnue",
+                "de": "Öffentliche Adresse unbekannt",
+                "es": "Dirección pública desconocida"
+              }
+            }
+          ],
+          "required": false
+        }
+      ],
+      "variables": [
+        {
+          "key": "hostname",
+          "type": "string",
+          "label": {
+            "en": "No-IP name",
+            "fr": "Nom No-IP",
+            "de": "No-IP-Name",
+            "es": "Nombre No-IP"
+          }
+        },
+        {
+          "key": "family",
+          "type": "string",
+          "label": {
+            "en": "Address type (ipv4, ipv6)",
+            "fr": "Type d’adresse (ipv4, ipv6)",
+            "de": "Adresstyp (ipv4, ipv6)",
+            "es": "Tipo de dirección (ipv4, ipv6)"
+          }
+        },
+        {
+          "key": "ip",
+          "type": "string",
+          "label": {
+            "en": "Address sent",
+            "fr": "Adresse envoyée",
+            "de": "Gesendete Adresse",
+            "es": "Dirección enviada"
+          }
+        },
+        {
+          "key": "error",
+          "type": "string",
+          "label": {
+            "en": "Error code",
+            "fr": "Code d’erreur",
+            "de": "Fehlercode",
+            "es": "Código de error"
+          }
+        },
+        {
+          "key": "message",
+          "type": "string",
+          "label": {
+            "en": "Error message",
+            "fr": "Message d’erreur",
+            "de": "Fehlermeldung",
+            "es": "Mensaje de error"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "update_now",
+      "label": {
+        "en": "No-IP: update now",
+        "fr": "No-IP : mettre à jour",
+        "de": "No-IP: jetzt aktualisieren",
+        "es": "No-IP: actualizar ahora"
+      },
+      "description": {
+        "en": "Checks the public address and updates the records that must change, without waiting for the next check.",
+        "fr": "Vérifie l’adresse publique et met à jour les enregistrements qui doivent changer, sans attendre la prochaine vérification.",
+        "de": "Prüft die öffentliche Adresse und aktualisiert die Einträge, die sich ändern müssen, ohne auf die nächste Prüfung zu warten.",
+        "es": "Comprueba la dirección pública y actualiza los registros que deben cambiar, sin esperar a la siguiente comprobación."
+      },
+      "timeout_seconds": 60,
+      "fields": [
+        {
+          "key": "host",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "No-IP name",
+            "fr": "Nom No-IP",
+            "de": "No-IP-Name",
+            "es": "Nombre No-IP"
+          },
+          "description": {
+            "en": "A No-IP device of the integration. Leave empty for every name.",
+            "fr": "Un appareil No-IP de l’intégration. Laissez vide pour tous les noms.",
+            "de": "Ein No-IP-Gerät der Integration. Leer lassen für alle Namen.",
+            "es": "Un dispositivo No-IP de la integración. Déjalo vacío para todos los nombres."
+          },
+          "required": false
+        },
+        {
+          "key": "force",
+          "type": "boolean",
+          "label": {
+            "en": "Send even if already right",
+            "fr": "Envoyer même si déjà à jour",
+            "de": "Auch senden, wenn schon aktuell",
+            "es": "Enviar aunque ya esté al día"
+          },
+          "description": {
+            "en": "Sends names already right to No-IP too (at most once an hour per name: too many \"already right\" answers get a client blocked).",
+            "fr": "Envoie aussi à No-IP les noms déjà à jour (au plus une fois par heure et par nom : trop de réponses « déjà à jour » font bloquer un client).",
+            "de": "Sendet auch schon aktuelle Namen an No-IP (höchstens einmal pro Stunde und Name: zu viele Antworten „schon aktuell“ führen zur Sperre).",
+            "es": "Envía también a No-IP los nombres ya al día (como máximo una vez por hora y nombre: demasiadas respuestas «ya al día» bloquean el cliente)."
+          },
+          "default": false,
+          "required": false
+        }
+      ],
+      "outputs": [
+        {
+          "key": "updated",
+          "type": "number",
+          "label": {
+            "en": "Records updated",
+            "fr": "Enregistrements mis à jour",
+            "de": "Aktualisierte Einträge",
+            "es": "Registros actualizados"
+          }
+        },
+        {
+          "key": "unchanged",
+          "type": "number",
+          "label": {
+            "en": "Records already right",
+            "fr": "Enregistrements déjà à jour",
+            "de": "Schon aktuelle Einträge",
+            "es": "Registros ya al día"
+          }
+        },
+        {
+          "key": "failed",
+          "type": "number",
+          "label": {
+            "en": "Records failed",
+            "fr": "Enregistrements en échec",
+            "de": "Fehlgeschlagene Einträge",
+            "es": "Registros con error"
+          }
+        },
+        {
+          "key": "summary",
+          "type": "string",
+          "label": {
+            "en": "Summary",
+            "fr": "Résumé",
+            "de": "Zusammenfassung",
+            "es": "Resumen"
+          }
+        }
+      ]
+    },
+    {
+      "key": "get_public_ip",
+      "label": {
+        "en": "No-IP: read the public address",
+        "fr": "No-IP : lire l’adresse publique",
+        "de": "No-IP: öffentliche Adresse lesen",
+        "es": "No-IP: leer la dirección pública"
+      },
+      "description": {
+        "en": "Reads the public IPv4 and IPv6 addresses of the home now, to send them in a message.",
+        "fr": "Lit tout de suite les adresses publiques IPv4 et IPv6 de la maison, pour les envoyer dans un message.",
+        "de": "Liest sofort die öffentlichen IPv4- und IPv6-Adressen des Zuhauses, um sie in einer Nachricht zu senden.",
+        "es": "Lee ahora las direcciones públicas IPv4 e IPv6 de la casa, para enviarlas en un mensaje."
+      },
+      "timeout_seconds": 60,
+      "outputs": [
+        {
+          "key": "ipv4",
+          "type": "string",
+          "label": {
+            "en": "Public IPv4 (empty if none)",
+            "fr": "IPv4 publique (vide si aucune)",
+            "de": "Öffentliche IPv4 (leer, wenn keine)",
+            "es": "IPv4 pública (vacía si no hay)"
+          }
+        },
+        {
+          "key": "ipv6",
+          "type": "string",
+          "label": {
+            "en": "Public IPv6 (empty if none)",
+            "fr": "IPv6 publique (vide si aucune)",
+            "de": "Öffentliche IPv6 (leer, wenn keine)",
+            "es": "IPv6 pública (vacía si no hay)"
+          }
+        },
+        {
+          "key": "summary",
+          "type": "string",
+          "label": {
+            "en": "Summary",
+            "fr": "Résumé",
+            "de": "Zusammenfassung",
+            "es": "Resumen"
+          }
+        }
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "key": "status",
+      "label": {
+        "en": "No-IP",
+        "fr": "No-IP",
+        "de": "No-IP",
+        "es": "No-IP"
+      },
+      "description": {
+        "en": "The public address of the home and each No-IP name, with a button to update now.",
+        "fr": "L’adresse publique de la maison et chaque nom No-IP, avec un bouton de mise à jour.",
+        "de": "Die öffentliche Adresse und jeder No-IP-Name, mit Knopf zum Aktualisieren.",
+        "es": "La dirección pública de la casa y cada nombre No-IP, con un botón para actualizar."
+      },
+      "icon": "globe",
+      "action_timeout_seconds": 60
+    }
+  ]
+}

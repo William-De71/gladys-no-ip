@@ -1,0 +1,14 @@
+Gladys No-IP integration
+Copyright 2026 William Deren
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+The hostnames are updated through the update endpoint of No-IP
+(https://www.noip.com/integrate/request), with the No-IP account or the DDNS
+Key each user enters. The public address of the home is read on the public
+echo services ipify (https://www.ipify.org), icanhazip (https://icanhazip.com)
+and ident.me (https://ident.me), which only see the address a request comes
+from.
+
+No-IP is a trademark of Vitalwerks Internet Solutions, LLC. This community
+integration is not affiliated with, endorsed or sponsored by No-IP.
