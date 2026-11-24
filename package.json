@@ -1,6 +1,6 @@
 {
   "name": "gladys-no-ip",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "External Gladys Assistant integration for No-IP (dynamic DNS): keeps No-IP hostnames, groups or DDNS Keys pointed at the public IPv4 / IPv6 address of the home through the official No-IP update endpoint, with devices, scene triggers (public address changed, record updated, update failed), scene actions and a dashboard widget.",
   "homepage": "https://github.com/William-De71/gladys-no-ip",
